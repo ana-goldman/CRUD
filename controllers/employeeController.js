@@ -1,18 +1,15 @@
-const express = require('express');
-const router = express.Router();
 const Employee = require('../models/employee');
-const Department = require('../models/department');
 
-router.get('/employees', async (req, res) => {
+const getAllEmployees = async (req, res) => {
   try {
     const employees = await Employee.find({});
     res.status(200).json(employees);
   } catch (error) {
     console.error('Error catching:', error);
   }
-});
+};
 
-router.post('/employees', async (req, res) => {
+const addEmployee = async (req, res) => {
   try {
     const { name, department } = req.body;
 
@@ -41,6 +38,9 @@ router.post('/employees', async (req, res) => {
       error: error.message,
     });
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  getAllEmployees,
+  addEmployee,
+};
