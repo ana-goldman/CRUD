@@ -10,8 +10,9 @@ const employeeSchema = new Schema({
     type: String,
     required: true,
   },
-  department: {
-    type: String,
+  departmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
     required: true,
   },
 });

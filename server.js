@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.use('/', require('./routes/employee'));
+app.use('/', [require('./routes/employee'), require('./routes/department')]);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
