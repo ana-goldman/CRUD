@@ -11,20 +11,20 @@ const getAllEmployees = async (req, res) => {
 
 const addEmployee = async (req, res) => {
   try {
-    const { name, department } = req.body;
+    const { name, surname, department } = req.body;
 
-    if (!name || !department) {
+    if (!name || !surname || !department) {
       return res.status(400).json('Please enter a name and department');
     }
 
-    const checkEmployee = await Employee.findOne({ name, department });
+    const checkEmployee = await Employee.findOne({ name, surname, department });
     if (checkEmployee) {
       return res.status(409).json({
         message: 'Employee already exists',
       });
     }
 
-    const newEmployee = new Employee({ name, department });
+    const newEmployee = new Employee({ name, surname, department });
     await newEmployee.save();
 
     return res.status(201).json({
