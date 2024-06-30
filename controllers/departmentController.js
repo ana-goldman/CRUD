@@ -9,6 +9,27 @@ const getAllDepartments = async (req, res) => {
   }
 };
 
+const getDepartmentByName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const department = await Department.findOne({
+      // case insensitive
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
+    }).populate('employees');
+
+    if (!department) {
+      return res.status(404).json({ message: 'Department not found' });
+    }
+    res.status(200).json(department);
+  } catch (error) {
+    console.error('Error fetching department:', error);
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
+
 const addDepartment = async (req, res) => {
   try {
     const { name } = req.body;
@@ -42,5 +63,6 @@ const addDepartment = async (req, res) => {
 
 module.exports = {
   getAllDepartments,
+  getDepartmentByName,
   addDepartment,
 };

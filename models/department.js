@@ -7,6 +7,12 @@ const departmentSchema = new Schema({
     required: true,
     unique: true,
   },
+  employees: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Employee',
+    },
+  ],
 });
 
 module.exports = mongoose.model('Department', departmentSchema);

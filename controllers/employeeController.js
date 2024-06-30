@@ -37,6 +37,9 @@ const addEmployee = async (req, res) => {
     const newEmployee = new Employee({ name, surname, departmentId: departmentDoc._id });
     await newEmployee.save();
 
+    departmentDoc.employees.push(newEmployee._id);
+    await departmentDoc.save();
+
     return res.status(201).json({
       message: 'Employee added successfully',
       employee: newEmployee,
