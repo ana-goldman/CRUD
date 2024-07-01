@@ -10,7 +10,7 @@ const getAllDepartments = async (req, res) => {
   }
 };
 
-const getDepartmentById = async (req, res) => {
+const getDepartmentByName = async (req, res) => {
   try {
     const { name } = req.body;
     const departmentId = await getDepartmentIdByName(name);
@@ -61,7 +61,7 @@ const addDepartment = async (req, res) => {
   }
 };
 
-const updateDepartment = async (req, res) => {
+const updateDepartmentById = async (req, res) => {
   try {
     const { name, update } = req.body;
     const trimmedUpdate = typeof update === 'string' ? update.trim() : update;
@@ -97,7 +97,7 @@ const updateDepartment = async (req, res) => {
 
 module.exports = {
   getAllDepartments,
-  getDepartmentById,
+  getDepartmentByName,
   addDepartment,
-  updateDepartment,
+  updateDepartmentById,
 };

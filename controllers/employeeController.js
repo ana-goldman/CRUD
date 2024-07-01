@@ -72,8 +72,39 @@ const searchEmployee = async (req, res) => {
   }
 };
 
+const updateEmployeeById = async (req, res) => {
+  try {
+    const {
+      employeeId,
+      update: { name, surname, department },
+    } = req.body;
+
+    if (!employeeId) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      employeeId,
+      { name, surname, department },
+      { new: true },
+    );
+
+    return res.status(201).json({
+      message: 'Employee updated successfully',
+      employee: updatedEmployee,
+    });
+  } catch (error) {
+    console.error('Error updateing employee info:', error);
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllEmployees,
   addEmployee,
   searchEmployee,
+  updateEmployeeById,
 };
