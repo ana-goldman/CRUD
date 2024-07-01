@@ -53,7 +53,27 @@ const addEmployee = async (req, res) => {
   }
 };
 
+const searchEmployee = async (req, res) => {
+  try {
+    const { query } = req.params;
+    if (!query) {
+      return res.status(400).json('Query parameter is required');
+    }
+
+    const regex = new RegExp(query, 'i');
+    const employees = await Employee.find({
+      $or: [{ name: regex }, { surname: regex }],
+    }).populate('departmentId', 'name');
+
+    return res.status(200).json(employees);
+  } catch (error) {
+    console.error('Error searching employees:', error);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+};
+
 module.exports = {
   getAllEmployees,
   addEmployee,
+  searchEmployee,
 };

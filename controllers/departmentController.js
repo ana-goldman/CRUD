@@ -1,4 +1,5 @@
 const Department = require('../models/department');
+const { getDepartmentIdByName } = require('../utils/getDepartmentIdByName');
 
 const getAllDepartments = async (req, res) => {
   try {
@@ -9,19 +10,16 @@ const getAllDepartments = async (req, res) => {
   }
 };
 
-const getDepartmentByName = async (req, res) => {
+const getDepartmentById = async (req, res) => {
   try {
-    const { name } = req.params;
-    const departmentDoc = await Department.findOne({
-      // case insensitive
-      name: { $regex: new RegExp(`^${name}$`, 'i') },
-    });
+    const { name } = req.body;
+    const departmentId = await getDepartmentIdByName(name);
 
-    if (!departmentDoc) {
+    if (!departmentId) {
       return res.status(404).json({ message: 'Department not found' });
     }
 
-    const department = await Department.findById(departmentDoc._id).populate('employees');
+    const department = await Department.findById(departmentId).populate('employees');
     res.status(200).json(department);
   } catch (error) {
     console.error('Error fetching department:', error);
@@ -63,8 +61,43 @@ const addDepartment = async (req, res) => {
   }
 };
 
+const updateDepartment = async (req, res) => {
+  try {
+    const { name, update } = req.body;
+    const trimmedUpdate = typeof update === 'string' ? update.trim() : update;
+
+    if (!name || !trimmedUpdate) {
+      return res.status(400).json('Please provide a department name and an update');
+    }
+
+    const departmentId = await getDepartmentIdByName(name);
+
+    const updatedDepartment = await Department.findByIdAndUpdate(
+      departmentId,
+      { name: trimmedUpdate },
+      { new: true },
+    );
+
+    if (!updatedDepartment) {
+      return res.status(404).json({ message: 'Department not found' });
+    }
+
+    return res.status(201).json({
+      message: 'Department updated successfully',
+      department: updatedDepartment,
+    });
+  } catch (error) {
+    console.error('Error updateing department:', error);
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllDepartments,
-  getDepartmentByName,
+  getDepartmentById,
   addDepartment,
+  updateDepartment,
 };
