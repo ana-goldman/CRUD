@@ -12,14 +12,16 @@ const getAllDepartments = async (req, res) => {
 const getDepartmentByName = async (req, res) => {
   try {
     const { name } = req.params;
-    const department = await Department.findOne({
+    const departmentDoc = await Department.findOne({
       // case insensitive
       name: { $regex: new RegExp(`^${name}$`, 'i') },
-    }).populate('employees');
+    });
 
-    if (!department) {
+    if (!departmentDoc) {
       return res.status(404).json({ message: 'Department not found' });
     }
+
+    const department = await Department.findById(departmentDoc._id).populate('employees');
     res.status(200).json(department);
   } catch (error) {
     console.error('Error fetching department:', error);
